@@ -27,14 +27,4 @@ app.use((req, res, next) => {
 app.use("/products", productRoutes);
 app.use("/", authRoutes);
 
-mongodb
-  .connect(
-    "mongodb+srv://<username>:<password>@<your-cluster-url>/shop?retryWrites=true&w=majority"
-  )
-  .then((client) => {
-    console.log("Connected!");
-    client.close();
-  })
-  .catch((err) => console.log(err));
-
 app.listen(3100);
