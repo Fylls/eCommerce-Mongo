@@ -1,5 +1,6 @@
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
+const Decimal128 = mongodb.Decimal128;
 
 const Router = require("express").Router;
 
@@ -82,7 +83,7 @@ router.post("", (req, res, next) => {
   const newProduct = {
     name: req.body.name,
     description: req.body.description,
-    price: parseFloat(req.body.price), // store this as 128bit decimal in MongoDB
+    price: Decimal128.fromString(req.body.price.toString()), // store this as 128bit decimal in MongoDB
     image: req.body.image,
   };
 
@@ -90,12 +91,25 @@ router.post("", (req, res, next) => {
     "mongodb+srv://<username>:<password>@<your-cluster-url>/shop?retryWrites=true&w=majority"
   )
     .then((client) => {
-      client.db().collection("products").insertMany(newProduct);
+      client
+        .db()
+        .collection("products")
+        .insertMany(newProduct)
+        .then((results) => {
+          console.log(results);
+          client.close();
+          res
+            .status(201)
+            .json({ message: "Product added", productId: results.insertedId });
+        })
+        .catch((err) => {
+          console.log(err);
+          client.close();
+          res.status(500).json({ message: "error" });
+        });
       client.close();
     })
     .catch((err) => console.log(err));
-
-  res.status(201).json({ message: "Product added", productId: "DUMMY" });
 });
 
 // Edit existing product
