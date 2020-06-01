@@ -1,2 +1,2 @@
 # eCommerce-Mongo
-operpriced things you will never buy.
+overpriced junk you will never buy.
