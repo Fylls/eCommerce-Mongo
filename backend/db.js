@@ -24,7 +24,7 @@ const initDB = (callBack) => {
     return callBack(null, _db);
   }
 
-  MongoClient.connect(mongoUrl)
+  MongoClient.connect(mongoUrl, { useUnifiedTopology: true })
     .then((client) => {
       _db = client;
       callBack(null, _db);
@@ -45,18 +45,14 @@ module.exports = {
   getDB,
 };
 
-/*
+//                          O  L  D
 
-                                        O  L  D
+// MongoClient.connect("mongodb+srv://Filippo:6O4hCjBrvUs6JImO@cluster0-x6ihw.mongodb.net/test?retryWrites=true&w=majority")
+//    .then((client) => {
+//        const products = [];
+//       client.db()
 
-MongoClient.connect("mongodb+srv://Filippo:6O4hCjBrvUs6JImO@cluster0-x6ihw.mongodb.net/test?retryWrites=true&w=majority")
-    .then((client) => {
-        const products = [];
-        clienT.db()
+//                          N  E  W
 
-                                        N  E  W
-
-const db = require("../db");
-db.getDB()
-
-*/
+// const db = require("../db");
+// db.getDB()
