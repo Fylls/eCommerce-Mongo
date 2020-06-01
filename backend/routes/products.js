@@ -1,8 +1,8 @@
+const Router = require("express").Router;
 const mongodb = require("mongodb");
+
 const MongoClient = mongodb.MongoClient;
 const Decimal128 = mongodb.Decimal128;
-
-const Router = require("express").Router;
 
 const router = Router();
 
@@ -57,18 +57,45 @@ const products = [
 
 // Get list of products products
 router.get("/", (req, res, next) => {
-  // Return a list of dummy products
-  // Later, this data will be fetched from MongoDB
-  const queryPage = req.query.page;
-  const pageSize = 5;
-  let resultProducts = [...products];
-  if (queryPage) {
-    resultProducts = products.slice(
-      (queryPage - 1) * pageSize,
-      queryPage * pageSize
-    );
-  }
-  res.json(resultProducts);
+  //    const queryPage = req.query.page;
+  //    const pageSize = 5;
+  //
+  //    let resultProducts = [...products];
+  //
+  //     if (queryPage) {
+  //      resultProducts = products.slice(
+  //        (queryPage - 1) * pageSize,
+  //         queryPage * pageSize
+  //      );
+  //    }
+
+  MongoClient.connect(
+    "mongodb+srv://Filippo:6O4hCjBrvUs6JImO@cluster0-x6ihw.mongodb.net/test?retryWrites=true&w=majority"
+  )
+    .then((client) => {
+      const products = [];
+      client
+        .db()
+        .collection("products")
+        .find()
+        .forEach((productDoc) => {
+          productDoc.price = productDoc.price.toString();
+          products.push(productDoc);
+        })
+        .then((result) => {
+          client.close();
+          res.status(200).json(products);
+        })
+        .catch((err) => {
+          console.log(err);
+          client.close();
+          res.status(500).json({ message: "An error occurred." });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "An error occurred." });
+    });
 });
 
 // Get single product
@@ -86,30 +113,31 @@ router.post("", (req, res, next) => {
     price: Decimal128.fromString(req.body.price.toString()), // store this as 128bit decimal in MongoDB
     image: req.body.image,
   };
-
   MongoClient.connect(
-    "mongodb+srv://<username>:<password>@<your-cluster-url>/shop?retryWrites=true&w=majority"
+    "mongodb+srv://Filippo:6O4hCjBrvUs6JImO@cluster0-x6ihw.mongodb.net/test?retryWrites=true&w=majority"
   )
     .then((client) => {
       client
         .db()
         .collection("products")
-        .insertMany(newProduct)
-        .then((results) => {
-          console.log(results);
+        .insertOne(newProduct)
+        .then((result) => {
+          console.log(result);
           client.close();
           res
             .status(201)
-            .json({ message: "Product added", productId: results.insertedId });
+            .json({ message: "Product added", productId: result.insertedId });
         })
         .catch((err) => {
           console.log(err);
           client.close();
-          res.status(500).json({ message: "error" });
+          res.status(500).json({ message: "An error occurred." });
         });
-      client.close();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "An error occurred." });
+    });
 });
 
 // Edit existing product

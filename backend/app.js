@@ -1,9 +1,8 @@
-const mongodb = require("mongodb").MongoClient;
-
 const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongodb = require("mongodb").MongoClient;
 
 const productRoutes = require("./routes/products");
 const authRoutes = require("./routes/auth");
