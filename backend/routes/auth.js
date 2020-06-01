@@ -59,4 +59,7 @@ router.post("/signup", (req, res, next) => {
     });
 });
 
+// Adding an index to make the email fieeld unique
+// [shell] db.users.createIndex({ email: 1 }, { unique: true });
+
 module.exports = router;
