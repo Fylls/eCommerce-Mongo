@@ -1,3 +1,15 @@
+//                                      CONNECTION POOLING:
+// Provided by the mongodb driver
+
+// You can handle multiple incoming requests to your node restAPI simultanenuously,
+// because you can only send one request per connection to mongodb normally but,
+// since you have a connection pool here of multiple available connections,
+// even if you have multiple incoming connections to nodejs, you can forward them to mongodb
+// thanks to this connection pooling.
+
+// So this is also an advantage of this approach where we reuse one client because here, we actually have
+// a shared connection pool then.
+
 const mongodb = require("mongodb");
 
 const MongoClient = mongodb.MongoClient;
@@ -14,7 +26,7 @@ const initDB = (callBack) => {
 
   MongoClient.connect(mongoUrl)
     .then((client) => {
-      _db = client.db();
+      _db = client;
       callBack(null, _db);
     })
     .catch((err) => callBack(err));

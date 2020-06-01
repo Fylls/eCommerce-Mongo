@@ -72,6 +72,7 @@ router.get("/", (req, res, next) => {
   const products = [];
 
   db.getDB()
+    .db() //pool
     .collection("products")
     .find()
     .forEach((productDoc) => {
@@ -105,6 +106,7 @@ router.post("", (req, res, next) => {
   };
 
   db.getDB()
+    .db() //pool
     .collection("products")
     .insertOne(newProduct)
     .then((result) => {
