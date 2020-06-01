@@ -73,6 +73,9 @@ router.get("/", (req, res, next) => {
 
   const products = [];
 
+  // creting an index inside the shell
+  // [shell] db.product.createIndex({ price: 1 })
+
   db.getDB()
     .db()
     .collection("products")
