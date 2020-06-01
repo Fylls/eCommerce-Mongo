@@ -1,11 +1,10 @@
 .edit-product__form {
-    width: 90%;
-    margin: auto;
+  width: 90%;
+  margin: auto;
+}
+
+@media (min-width: 768px) {
+  .edit-product__form {
+    width: 40rem;
   }
-  
-  @media (min-width: 768px) {
-    .edit-product__form {
-      width: 40rem;
-    }
-  }
-  
+}

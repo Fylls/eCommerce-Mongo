@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import axios from 'axios';
+import React, { Component } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import axios from "axios";
 
-import Header from './components/Header/Header';
-import Modal from './components/Modal/Modal';
-import Backdrop from './components/Backdrop/Backdrop';
-import ProductsPage from './pages/Product/Products';
-import ProductPage from './pages/Product/Product';
-import EditProductPage from './pages/Product/EditProduct';
-import AuthPage from './pages/Auth/Auth';
+import Header from "./components/Header/Header";
+import Modal from "./components/Modal/Modal";
+import Backdrop from "./components/Backdrop/Backdrop";
+import ProductsPage from "./pages/Product/Products";
+import ProductPage from "./pages/Product/Product";
+import EditProductPage from "./pages/Product/EditProduct";
+import AuthPage from "./pages/Auth/Auth";
 
 class App extends Component {
   state = {
     isAuth: true,
-    authMode: 'login',
-    error: null
+    authMode: "login",
+    error: null,
   };
 
   logoutHandler = () => {
@@ -23,17 +23,17 @@ class App extends Component {
 
   authHandler = (event, authData) => {
     event.preventDefault();
-    if (authData.email.trim() === '' || authData.password.trim() === '') {
+    if (authData.email.trim() === "" || authData.password.trim() === "") {
       return;
     }
     let request;
-    if (this.state.authMode === 'login') {
-      request = axios.post('http://localhost:3100/login', authData);
+    if (this.state.authMode === "login") {
+      request = axios.post("http://localhost:3100/login", authData);
     } else {
-      request = axios.post('http://localhost:3100/signup', authData);
+      request = axios.post("http://localhost:3100/signup", authData);
     }
     request
-      .then(authResponse => {
+      .then((authResponse) => {
         if (authResponse.status === 201 || authResponse.status === 200) {
           const token = authResponse.data.token;
           console.log(token);
@@ -42,7 +42,7 @@ class App extends Component {
           this.setState({ isAuth: true });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         this.errorHandler(err.response.data.message);
         console.log(err);
         this.setState({ isAuth: false });
@@ -50,16 +50,16 @@ class App extends Component {
   };
 
   authModeChangedHandler = () => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return {
-        authMode: prevState.authMode === 'login' ? 'signup' : 'login'
+        authMode: prevState.authMode === "login" ? "signup" : "login",
       };
     });
   };
 
-  errorHandler = message => {
+  errorHandler = (message) => {
     this.setState({
-      error: message
+      error: message,
     });
   };
 
@@ -71,25 +71,25 @@ class App extends Component {
         <Redirect from="/signup" to="/products" exact />
         <Route
           path="/product/:mode"
-          render={props => (
+          render={(props) => (
             <EditProductPage {...props} onError={this.errorHandler} />
           )}
         />
         <Route
           path="/products/:id/:mode"
-          render={props => (
+          render={(props) => (
             <EditProductPage {...props} onError={this.errorHandler} />
           )}
         />
         <Route
           path="/products/:id"
-          render={props => (
+          render={(props) => (
             <ProductPage {...props} onError={this.errorHandler} />
           )}
         />
         <Route
           path="/products"
-          render={props => (
+          render={(props) => (
             <ProductsPage {...props} onError={this.errorHandler} />
           )}
         />
