@@ -19,8 +19,9 @@ class ProductsPage extends Component {
       RemoteMongoClient.factory,
       "mongodb-atlas"
     );
+
     mongodb
-      .db("shop")
+      .db("test")
       .collection("products")
       .deleteOne({ _id: new BSON.ObjectId(productId) })
       .then((result) => {
