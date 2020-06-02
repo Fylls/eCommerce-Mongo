@@ -30,6 +30,7 @@ class App extends Component {
     // init
     super();
     this.client = Stitch.initializeDefaultAppClient("myshop-zjsbn");
+    this.client.callFunction("greet"); //mongodb cloud function
   }
 
   logoutHandler = () => {
