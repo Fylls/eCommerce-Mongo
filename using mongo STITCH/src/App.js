@@ -4,7 +4,11 @@ import { Switch, Route, Redirect } from "react-router-dom";
 // axios is used for creating REST api. no need here
 // import axios from "axios";
 
-import { Stitch, AnonymousCredential } from "mongodb-stitch-browser-sdk";
+import {
+  Stitch,
+  UserPasswordAuthProviderClient,
+  UserPasswordCredential,
+} from "mongodb-stitch-browser-sdk";
 
 import Header from "./components/Header/Header";
 import Modal from "./components/Modal/Modal";
@@ -17,7 +21,7 @@ import ConfirmAccountPage from "./pages/Auth/ConfirmAccount";
 
 class App extends Component {
   state = {
-    isAuth: true, // starting in auth mode
+    isAuth: false, // auth mode ?
     authMode: "login",
     error: null,
   };
@@ -25,41 +29,55 @@ class App extends Component {
   constructor() {
     // init
     super();
-    const client = Stitch.initializeDefaultAppClient("myshop-zjsbn");
-    client.auth.loginWithCredential(new AnonymousCredential());
+    this.client = Stitch.initializeDefaultAppClient("myshop-zjsbn");
   }
 
   logoutHandler = () => {
     this.setState({ isAuth: false });
   };
 
+  // sign up
   authHandler = (event, authData) => {
     event.preventDefault();
+
     if (authData.email.trim() === "" || authData.password.trim() === "") {
       return;
     }
 
-    //   let request;
-    //   if (this.state.authMode === "login") {
-    //     request = axios.post("http://localhost:3100/login", authData);
-    //   } else {
-    //     request = axios.post("http://localhost:3100/signup", authData);
-    //   }
-    //   request
-    //     .then((authResponse) => {
-    //       if (authResponse.status === 201 || authResponse.status === 200) {
-    //         const token = authResponse.data.token;
-    //         console.log(token);
-    //         // Theoretically, you would now store the token in localstorage + app state
-    //         // and use it for subsequent requests to protected backend resources
-    //         this.setState({ isAuth: true });
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       this.errorHandler(err.response.data.message);
-    //       console.log(err);
-    //       this.setState({ isAuth: false });
-    //     });
+    const emailPassClient = this.client.auth.getProviderClient(
+      UserPasswordAuthProviderClient.factory
+    );
+
+    // init variable
+    let request;
+
+    if (this.state.authMode === "login") {
+      // log in
+      const credential = new UserPasswordCredential(
+        authData.email,
+        authData.password
+      );
+      request = this.client.auth.loginWithCredential(credential);
+    } else {
+      //sign up
+      request = emailPassClient.registerWithEmail(
+        authData.email,
+        authData.password
+      );
+    }
+
+    request
+      .then((result) => {
+        console.log(result);
+        if (result) {
+          this.setState({ isAuth: true });
+        }
+      })
+      .catch((err) => {
+        this.errorHandler("an error occurred");
+        console.log(err);
+        this.setState({ isAuth: false });
+      });
   };
 
   authModeChangedHandler = () => {
