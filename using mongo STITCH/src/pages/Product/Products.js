@@ -45,14 +45,15 @@ class ProductsPage extends Component {
     mongodb
       .db("test")
       .collection("products")
-      .find()
+      .find({})
       .asArray()
       .then((products) => {
-        const transformedProducts = products.map((product) => {
-          product._id = product._id.toString();
-          product.price = product.price.toString();
-          return product;
+        products.forEach((x) => {
+          console.log(x);
+          x._id = x._id.toString();
+          x.price = x.price.toString();
         });
+
         console.log(products);
         this.setState({ isLoading: false, products: products });
       })
