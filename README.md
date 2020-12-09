@@ -11,7 +11,7 @@ After Amazon destroyed capitalism there's no room left from small e-commerce sit
 
 ![ecommerce-website-kbworks](https://user-images.githubusercontent.com/55017307/90951568-4d1b9980-e45c-11ea-8d49-501b8c7413a7.png)
 
-# Workout: MongoDB
+# Learning: MongoDB
 
 <br>
 
